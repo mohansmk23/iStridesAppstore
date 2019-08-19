@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">iStrides Appstore</string>
+
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+    <string name="download"> <u>Download</u></string>
+
+
+
+    <string name="share"> <u>Share</u></string>
+
+
+
+</resources>

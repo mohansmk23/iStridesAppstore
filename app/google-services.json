@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "407883287806",
+    "firebase_url": "https://istrides-appstore.firebaseio.com",
+    "project_id": "istrides-appstore",
+    "storage_bucket": "istrides-appstore.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407883287806:android:c32c535e231a6d07",
+        "android_client_info": {
+          "package_name": "com.istrides.appstore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407883287806-s1iak63qqcum4p65kdp0mld9e30tp8af.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8_0x11URk074Z0zRIN74ZuEKuu-C6n10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407883287806-s1iak63qqcum4p65kdp0mld9e30tp8af.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
