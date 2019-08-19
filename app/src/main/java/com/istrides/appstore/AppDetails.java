@@ -75,7 +75,7 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
     ImageView applogo, blurbg;
     LinearLayout rootlin;
-    TextView appname, date, description, download, share;
+    TextView appname, date, description, download, share,appVersion;
     ProgressDialog pDialog;
     String strappid, strappname, strshare = " ", strdownload = " ", strlogo;
     Call<AppDetailModel> list;
@@ -96,12 +96,13 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
         appname = findViewById(R.id.appname);
         rootlin = findViewById(R.id.linearroot);
         date = findViewById(R.id.datetxt);
+        appVersion = findViewById(R.id.txt_version);
         description = findViewById(R.id.destxt);
         download = findViewById(R.id.downloadtxt);
         share = findViewById(R.id.sharetxt);
         nodata = findViewById(R.id.nodatalay);
         recyclerView = findViewById(R.id.recyclerview);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_container);
 
         strappid = getIntent().getStringExtra("APPID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -173,6 +174,7 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
                         strappname = userResponse.getOutput().get(0).getAppsName();
                         strlogo = userResponse.getOutput().get(0).getAppsLogo();
                         date.setText(userResponse.getOutput().get(0).getDate());
+                        appVersion.setText("App Version " + userResponse.getOutput().get(0).getAppVersion());
                         strdownload = userResponse.getOutput().get(0).getApkurl();
                         description.setText(userResponse.getOutput().get(0).getAppsDescription());
 
@@ -272,17 +274,18 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             ImageView applogo;
-            TextView appname, date, download, share;
+            TextView appname, date, download, share,appVersion;
 
 
             public MyViewHolder(View view) {
                 super(view);
 
-                appname = (TextView) view.findViewById(R.id.appname);
-                applogo = (ImageView) view.findViewById(R.id.applogo);
-                date = (TextView) view.findViewById(R.id.datetxt);
-                download = (TextView) view.findViewById(R.id.downloadtxt);
-                share = (TextView) view.findViewById(R.id.sharetxt);
+                appname = view.findViewById(R.id.appname);
+                applogo = view.findViewById(R.id.applogo);
+                date = view.findViewById(R.id.datetxt);
+                appVersion = view.findViewById(R.id.txt_version);
+                download = view.findViewById(R.id.downloadtxt);
+                share = view.findViewById(R.id.sharetxt);
 
 
             }
@@ -308,6 +311,7 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
             holder.appname.setText(strappname);
             holder.date.setText(list.getDate());
+            holder.appVersion.setText("App Version "+list.getAppVersion());
             Glide.with(AppDetails.this).load(strlogo).into(new GlideDrawableImageViewTarget(holder.applogo));
 
             holder.download.setOnClickListener(new View.OnClickListener() {
@@ -332,10 +336,6 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
                     shareapk(list.getUploadApk());
                 }
             });
-
-            ;
-
-
         }
 
         @Override

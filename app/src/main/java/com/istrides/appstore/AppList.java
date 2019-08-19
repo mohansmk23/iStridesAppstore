@@ -187,7 +187,7 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            TextView nametxt,datetxt;
+            TextView nametxt,datetxt,appVersion;
             LinearLayout applay;
             ImageView applogo;
 
@@ -198,6 +198,7 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 nametxt = (TextView) view.findViewById(R.id.appname);
                 applogo = (ImageView) view.findViewById(R.id.applogo);
                 datetxt = (TextView) view.findViewById(R.id.datetxt);
+                appVersion = (TextView) view.findViewById(R.id.txt_version);
                 applay = (LinearLayout) view.findViewById(R.id.applay);
 
 
@@ -224,6 +225,7 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
 
          holder.nametxt.setText(list.getAppsName());
          holder.datetxt.setText(list.getDate());
+         holder.appVersion.setText(list.getAppVersion());
          Glide.with(AppList.this).load(list.getAppsLogo()).into(new GlideDrawableImageViewTarget(holder.applogo));
 
           holder.applay.setOnClickListener(new View.OnClickListener() {

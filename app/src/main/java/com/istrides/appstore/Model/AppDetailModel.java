@@ -44,6 +44,10 @@ public class AppDetailModel {
         @SerializedName("date")
         @Expose
         private String date;
+
+        @SerializedName( "app_version")
+        @Expose
+        private String appVersion;
         @SerializedName("apps_list")
         @Expose
         private List<AppsList> appsList = null;
@@ -96,6 +100,16 @@ public class AppDetailModel {
             this.appsDescription = appsDescription;
         }
 
+        public String getAppVersion()
+        {
+            return appVersion;
+        }
+
+        public void setAppVersion( String appVersion )
+        {
+            this.appVersion = appVersion;
+        }
+
         public String getDate() {
             return date;
         }
@@ -128,6 +142,20 @@ public class AppDetailModel {
             @SerializedName("upload_apk")
             @Expose
             private String uploadApk;
+
+            public String getAppVersion()
+            {
+                return appVersion;
+            }
+
+            public void setAppVersion( String appVersion )
+            {
+                this.appVersion = appVersion;
+            }
+
+            @SerializedName( "app_version")
+            @Expose
+            private String appVersion;
 
             public String getDate() {
                 return date;

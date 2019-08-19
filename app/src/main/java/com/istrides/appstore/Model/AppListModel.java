@@ -83,6 +83,20 @@ public class AppListModel {
             @Expose
             private String uploadApk;
 
+            public String getAppVersion()
+            {
+                return appVersion;
+            }
+
+            public void setAppVersion( String appVersion )
+            {
+                this.appVersion = appVersion;
+            }
+
+            @SerializedName( "app_version")
+            @Expose
+            private String appVersion;
+
             public String getAppsLogo() {
                 return appsLogo;
             }
