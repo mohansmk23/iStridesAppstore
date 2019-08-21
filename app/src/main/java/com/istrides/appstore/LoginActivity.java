@@ -149,6 +149,7 @@ public class LoginActivity extends AppCompatActivity
                         editor.putString( "access_token", userResponse.getOutput().get( 0 ).getAuthKey() );
                         editor.putString( "login_name", userResponse.getOutput().get( 0 ).getLoginName() );
                         editor.putString( "login_key", userResponse.getOutput().get( 0 ).getLoginKey() );
+                        editor.putString( "client_id", userResponse.getOutput().get( 0 ).getClientId().toString() );
                         editor.apply();
                         loginbtn.doneLoadingAnimation( Color.parseColor( "#4caf50" ), BitmapFactory.decodeResource( LoginActivity.this.getResources(), R.mipmap.whitetick ) );
                         mHandler.postDelayed( new Runnable()

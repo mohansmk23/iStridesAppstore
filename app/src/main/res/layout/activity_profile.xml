@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/loginbg"
+            android:weightSum="0.2">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:src="@mipmap/profile" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/relative_middle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/layout_corner"
+        android:elevation="15dp">
+
+
+       <TextView
+           android:id="@+id/edtname"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Edit profile details"
+           android:layout_alignParentRight="true"
+           android:layout_marginRight="18dp"
+           android:textSize="16sp"
+           android:textColor="@color/colorPrimaryDark"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rlsubject"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/usertxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/usericon"
+                android:drawablePadding="4dp"
+                android:hint="  Name"
+                android:inputType="text"
+                android:textColor="@drawable/edittextcolor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/emailcontainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textContainer"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/emailtxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/emailicon"
+                android:drawablePadding="4dp"
+                android:drawableTint="@color/colorPrimary"
+                android:hint="  E-mail"
+                android:textColor="@drawable/edittextcolor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+
+            android:id="@+id/oldpasscontainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/emailcontainer"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/passtxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/passicon"
+                android:drawablePadding="4dp"
+                android:hint="  Old Password"
+                android:inputType="textPassword"
+                android:textColor="@drawable/edittextcolor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/edtpass"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/emailcontainer"
+            android:layout_height="wrap_content"
+            android:text="Edit password"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="18dp"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimaryDark"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/newpasscontainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/oldpasscontainer"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/newpasstxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/passicon"
+                android:drawablePadding="4dp"
+                android:hint="  New Password"
+                android:inputType="textPassword"
+                android:textColor="@drawable/edittextcolor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/confirmcontainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/newpasscontainer"
+            android:layout_marginTop="16dp">
+
+            <EditText
+                android:id="@+id/confirmpasstxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/passicon"
+                android:drawablePadding="4dp"
+                android:hint="  Confirm Password"
+                android:inputType="textPassword"
+                android:textColor="@drawable/edittextcolor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

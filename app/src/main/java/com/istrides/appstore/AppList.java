@@ -268,6 +268,12 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
                     logoutalert();
                     dLayout.closeDrawers();
                     return true; }
+                else if (itemId == R.id.profile ){
+                    Intent i = new Intent(getApplicationContext(),ProfileActivity.class);
+                    startActivity(i);
+                    dLayout.closeDrawers();
+
+                }
 
                 return false;
             }

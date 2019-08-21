@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -40,6 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 
 import com.bumptech.glide.Glide;
@@ -85,16 +87,15 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
     Applistadapter adapter;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
 
 
-        blurbg = findViewById(R.id.blurlogo);
         applogo = findViewById(R.id.applogo);
         appname = findViewById(R.id.appname);
-        rootlin = findViewById(R.id.linearroot);
         date = findViewById(R.id.datetxt);
         appVersion = findViewById(R.id.txt_version);
         description = findViewById(R.id.destxt);
@@ -103,6 +104,8 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
         nodata = findViewById(R.id.nodatalay);
         recyclerView = findViewById(R.id.recyclerview);
         mSwipeRefreshLayout = findViewById(R.id.swipe_container);
+
+
 
         strappid = getIntent().getStringExtra("APPID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -116,7 +119,8 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
         loadapkdetais();
 
-
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,26 +172,18 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
                     String strsuccess = userResponse.getOutput().get(0).getStatus();
 
                     if (strsuccess.equalsIgnoreCase("success")) {
-                        blurbg.setVisibility(View.GONE);
+                        //blurbg.setVisibility(View.GONE);
                         Glide.with(AppDetails.this).load(userResponse.getOutput().get(0).getAppsLogo()).into(new GlideDrawableImageViewTarget(applogo));
                         appname.setText(userResponse.getOutput().get(0).getAppsName());
                         strappname = userResponse.getOutput().get(0).getAppsName();
                         strlogo = userResponse.getOutput().get(0).getAppsLogo();
                         date.setText(userResponse.getOutput().get(0).getDate());
-                        appVersion.setText("App Version " + userResponse.getOutput().get(0).getAppVersion());
+                        appVersion.setText(userResponse.getOutput().get(0).getAppVersion());
                         strdownload = userResponse.getOutput().get(0).getApkurl();
                         description.setText(userResponse.getOutput().get(0).getAppsDescription());
 
 
-                        // Glide.with(AppDetails.this).load(userResponse.getOutput().get(0).getAppsLogo()).into(new GlideDrawableImageViewTarget(blurbg));
 
-//                        Blurry.with(AppDetails.this)
-//                                .radius(2)
-//                                .sampling(8)
-//                                .color(Color.argb(66, 255, 255, 0))
-//                                .async()
-//                                .animate(500)
-//                                .onto(rootlin);
 
 
                         if (userResponse.getOutput().get(0).getAppsList().size() == 0) {
@@ -195,14 +191,14 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
                             nodata.setVisibility(View.VISIBLE);
 
                         } else {
-                            new Handler().postDelayed(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    blurbg.setVisibility(View.VISIBLE);
-                                    Blurry.with(AppDetails.this).capture(applogo).into(blurbg);
-                                }
-                            }, 1000);
+//                            new Handler().postDelayed(new Runnable() {
+//
+//                                @Override
+//                                public void run() {
+//                                    blurbg.setVisibility(View.VISIBLE);
+//                                    Blurry.with(AppDetails.this).capture(applogo).into(blurbg);
+//                                }
+//                            }, 1000);
                             nodata.setVisibility(View.GONE);
 
                             setuprecyclerview(userResponse.getOutput().get(0).getAppsList());
@@ -311,7 +307,7 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
             holder.appname.setText(strappname);
             holder.date.setText(list.getDate());
-            holder.appVersion.setText("App Version "+list.getAppVersion());
+            holder.appVersion.setText(list.getAppVersion());
             Glide.with(AppDetails.this).load(strlogo).into(new GlideDrawableImageViewTarget(holder.applogo));
 
             holder.download.setOnClickListener(new View.OnClickListener() {
@@ -390,6 +386,9 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
     BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
+
+            Log.i("petta","komali");
+
             File file = new File(Environment.getExternalStorageDirectory()
                     + "/Download/" + "istridesappstore/" + strappname + ".apk");//name here is the name of any string you want to pass to the method
 
@@ -399,18 +398,16 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
             startActivity(d);
             unregisterReceiver(this);
             Toast.makeText(AppDetails.this, "Download complete", Toast.LENGTH_SHORT).show();
+
         }
     };
 
 
     @Override
     public void onBackPressed() {
-
         Intent i = new Intent(getApplicationContext(), AppList.class);
         startActivity(i);
         finish();
-
-
     }
 
 

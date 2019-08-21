@@ -8,7 +8,21 @@
         <item
             android:id="@+id/home"
             android:icon="@mipmap/home"
-            android:title="Home" />
+            android:title="My app" />
+
+
+
+
+
+        <group android:id="@+id/grp3" android:checkableBehavior="none" >
+
+            <item
+                android:id="@+id/profile"
+                android:icon="@mipmap/usericon"
+                android:title="Profile" />
+
+        </group>
+
 
         <group android:id="@+id/grp1" android:checkableBehavior="none" >
 
@@ -16,7 +30,14 @@
                 android:id="@+id/logout"
                 android:icon="@mipmap/logout"
                 android:title="Logout" />
+
+
+
+
         </group>
+
+
+
 
 
 

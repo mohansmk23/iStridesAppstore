@@ -1,5 +1,8 @@
 package com.istrides.appstore.Connection;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Mohankumar S on 6/18/2019$.
  */
@@ -29,6 +32,10 @@ public class ObjectBody {
     }
 
 
+
+
+
+
     public static class appdetails {
         private String apk_key;
         private String app_id;
@@ -39,5 +46,49 @@ public class ObjectBody {
             this.app_id = app_id;
         }
     }
+
+
+
+
+    public static  class  changename {
+
+
+            @SerializedName("client_name")
+            @Expose
+            public String clientName;
+            @SerializedName("email_id")
+            @Expose
+            public String emailId;
+
+        public changename(String clientName, String emailId) {
+            this.clientName = clientName;
+            this.emailId = emailId;
+        }
+    }
+
+
+    public static  class  changepass {
+
+
+        @SerializedName("client_name")
+        @Expose
+        public String clientName;
+        @SerializedName("password_hash")
+        @Expose
+        public String passwordHash;
+        @SerializedName("old_password")
+        @Expose
+        public String oldPassword;
+
+        public changepass(String clientName, String passwordHash, String oldPassword) {
+            this.clientName = clientName;
+            this.passwordHash = passwordHash;
+            this.oldPassword = oldPassword;
+        }
+    }
+
+
+
+
 
 }
