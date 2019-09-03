@@ -24,10 +24,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.istrides.appstore.Connection.ApiConstant;
 import com.istrides.appstore.Connection.ApiGetPost;
 import com.istrides.appstore.Connection.ObjectBody;
 import com.istrides.appstore.Model.LoginModel;
+
+import java.util.List;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import retrofit2.Call;
@@ -64,6 +68,16 @@ public class LoginActivity extends AppCompatActivity
         {
             ActivityCompat.requestPermissions( LoginActivity.this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1 );
         }
+
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
+
+
+
         SharedPreferences preferences = getApplicationContext().getSharedPreferences( "login", 0 );
         if( preferences.getString( "login_name", null ) != null )
         {
@@ -126,6 +140,21 @@ public class LoginActivity extends AppCompatActivity
             }
         }
     }
+
+
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+        }
+
+        @Override
+        public void onPermissionDenied(List<String> deniedPermissions) {
+            Toast.makeText(LoginActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+
+    };
 
     private void loginretro()
     {
@@ -190,7 +219,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onFailure( Call<LoginModel> call, Throwable t )
             {
-                Toast.makeText( getApplicationContext(), "Please  ", Toast.LENGTH_SHORT ).show();
+                Toast.makeText( getApplicationContext(), "Please check your network ", Toast.LENGTH_SHORT ).show();
                 loginbtn.revertAnimation();
                 call.cancel();
             }

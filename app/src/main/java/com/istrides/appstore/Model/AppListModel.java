@@ -83,6 +83,23 @@ public class AppListModel {
             @Expose
             private String uploadApk;
 
+            @SerializedName("company_logo")
+            @Expose
+            private String company_logo;
+
+
+            public String getCompany_logo() {
+                return company_logo;
+            }
+
+            public String getCompany_name() {
+                return company_name;
+            }
+
+            @SerializedName("company_name")
+            @Expose
+            private String company_name;
+
             public String getAppVersion()
             {
                 return appVersion;

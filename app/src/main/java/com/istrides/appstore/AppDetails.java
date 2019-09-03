@@ -4,15 +4,21 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -23,9 +29,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,11 +42,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +74,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -77,14 +91,20 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
     ImageView applogo, blurbg;
     LinearLayout rootlin;
-    TextView appname, date, description, download, share,appVersion;
+    TextView appname, date, description, download,appVersion;
+    Button share;
     ProgressDialog pDialog;
     String strappid, strappname, strshare = " ", strdownload = " ", strlogo;
     Call<AppDetailModel> list;
     SwipeRefreshLayout mSwipeRefreshLayout;
     RelativeLayout nodata;
     RecyclerView recyclerView;
-    Applistadapter adapter;
+    ProgressDialog progressDialog;
+    Applistadapter adapter; private DownloadManager mgr=null;
+    private long lastDownload=-1L;
+    TextView heading,appdate,companyname;
+    ImageView companylogo;
+
 
 
 
@@ -93,6 +113,15 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_details);
 
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.parseColor("#000000"));
+        }
+
+
+
 
         applogo = findViewById(R.id.applogo);
         appname = findViewById(R.id.appname);
@@ -100,14 +129,26 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
         appVersion = findViewById(R.id.txt_version);
         description = findViewById(R.id.destxt);
         download = findViewById(R.id.downloadtxt);
-        share = findViewById(R.id.sharetxt);
+        share = findViewById(R.id.sharebtn);
         nodata = findViewById(R.id.nodatalay);
         recyclerView = findViewById(R.id.recyclerview);
         mSwipeRefreshLayout = findViewById(R.id.swipe_container);
+        mgr=(DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+
+
+        appdate = findViewById(R.id.appdatetxt);
+        companyname = findViewById(R.id.companytxt);
+        companylogo = findViewById(R.id.companylogo);
 
 
 
         strappid = getIntent().getStringExtra("APPID");
+        String appname = getIntent().getStringExtra("APPNAME");
+
+        String title = appname.substring(0, 1).toUpperCase() + appname.substring(1);
+
+        getSupportActionBar().setTitle(title);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
@@ -117,16 +158,32 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
+
+
+
+
+        String dateStr = "04/05/2010";
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c);
+        appdate.setText(formattedDate);
+        SharedPreferences prefs = getSharedPreferences("COMPANY", MODE_PRIVATE);
+        companyname.setText(prefs.getString("name", "No name defined"));
+        Glide.with(AppDetails.this).load(prefs.getString("logo", " ")).into(new GlideDrawableImageViewTarget(companylogo));
+
         loadapkdetais();
 
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
+
+
+//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//        StrictMode.setVmPolicy(builder.build());
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     downloadapk(strdownload);
 
                 } else {
@@ -154,7 +211,7 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
         pDialog.show();
         pDialog.setMessage("Loading");
         pDialog.setIndeterminate(false);
-        pDialog.setCancelable(true);
+        pDialog.setCancelable(false);
 
         ObjectBody.appdetails tech = new ObjectBody.appdetails("app_details", strappid);
         ApiGetPost service = ApiConstant.getamainurl(getApplicationContext()).create(ApiGetPost.class);
@@ -183,12 +240,27 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
                         description.setText(userResponse.getOutput().get(0).getAppsDescription());
 
 
+                        if(strdownload==null||strdownload.length()==0){
+
+                            download.setEnabled(false);
+                            download.setText("App not available");
+                            //download.setBackgroundColor(Color.parseColor("#f44336"));
+                            share.setEnabled(false);
+                            download.setEnabled(false);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                download.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#f44336")));
+                            }
+
+                        }
+
+
 
 
 
                         if (userResponse.getOutput().get(0).getAppsList().size() == 0) {
 
                             nodata.setVisibility(View.VISIBLE);
+                            mSwipeRefreshLayout.setVisibility(View.GONE);
 
                         } else {
 //                            new Handler().postDelayed(new Runnable() {
@@ -200,6 +272,7 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 //                                }
 //                            }, 1000);
                             nodata.setVisibility(View.GONE);
+                            mSwipeRefreshLayout.setVisibility(View.VISIBLE);
 
                             setuprecyclerview(userResponse.getOutput().get(0).getAppsList());
                         }
@@ -233,7 +306,10 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        RecyclerView.LayoutManager mmanger = new GridLayoutManager(this,2);
+
+        recyclerView.setLayoutManager(mmanger);
         recyclerView.scheduleLayoutAnimation();
         adapter = new Applistadapter(getApplicationContext(), appsList);
         recyclerView.setAdapter(adapter);
@@ -269,19 +345,19 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            ImageView applogo;
-            TextView appname, date, download, share,appVersion;
+            ImageView menu,applogo;
+            TextView appname, date,appVersion;
 
 
             public MyViewHolder(View view) {
                 super(view);
 
-                appname = view.findViewById(R.id.appname);
+               // appname = view.findViewById(R.id.appname);
                 applogo = view.findViewById(R.id.applogo);
                 date = view.findViewById(R.id.datetxt);
+                menu = view.findViewById(R.id.threedots);
                 appVersion = view.findViewById(R.id.txt_version);
-                download = view.findViewById(R.id.downloadtxt);
-                share = view.findViewById(R.id.sharetxt);
+
 
 
             }
@@ -305,33 +381,83 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
             final AppDetailModel.Output.AppsList list = tasklist.get(position);
 
-            holder.appname.setText(strappname);
+//            holder.appname.setText(strappname);
             holder.date.setText(list.getDate());
             holder.appVersion.setText(list.getAppVersion());
             Glide.with(AppDetails.this).load(strlogo).into(new GlideDrawableImageViewTarget(holder.applogo));
 
-            holder.download.setOnClickListener(new View.OnClickListener() {
+
+
+
+
+
+            holder.menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
 
-                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        downloadapk(list.getUploadApk());
+                    PopupMenu popup = new PopupMenu(mContext, holder.menu);
+                    //inflating menu from xml resource
+                    popup.inflate(R.menu.version_menu);
+                    //adding click listener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.download:
+                                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                        downloadapk(list.getUploadApk());
+                                    } else {
+                                        ActivityCompat.requestPermissions(AppDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                    }
+                                    break;
+                                case R.id.share:
+                                    shareapk(list.getUploadApk());
+                                    break;
 
-                    } else {
-                        ActivityCompat.requestPermissions(AppDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                    }
-
+                            }
+                            return false;
+                        }
+                    });
+                    //displaying the popup
+                    popup.show();
 
                 }
             });
 
-            holder.share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    shareapk(list.getUploadApk());
-                }
-            });
+
+
+
+
+
+
+
+
+
+
+
+//            holder.download.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//
+//                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+//                        downloadapk(list.getUploadApk());
+//
+//                    } else {
+//                        ActivityCompat.requestPermissions(AppDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//                    }
+//
+//
+//                }
+//            });
+//
+//            holder.share.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    shareapk(list.getUploadApk());
+//                }
+//            });
         }
 
         @Override
@@ -356,28 +482,49 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
 
     private void downloadapk(String url) {
 
-        File folder1 = new File(Environment.getExternalStorageDirectory()
-                + "/Download/" + "istridesappstore/" + strappname + ".apk");
+
+
+        progressDialog = new ProgressDialog(AppDetails.this);
+        progressDialog.show();
+        progressDialog.setMessage("Downloading");
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
 
         String s = url.replaceAll(" ", "%20");
         Uri link = Uri.parse(s);
 
-        DownloadManager.Request request = new DownloadManager.Request(link);
-        request.setDescription(strappname);
-        request.setTitle(strappname);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        }
+
+
+
+
+        File folder1 = new File(Environment.getExternalStorageDirectory()
+                 + "/Download/" + strappname + ".apk");
+
+
+        Log.i("petta",folder1.toString()+" ");
+
         if (folder1.exists()) {
             folder1.delete();
-        }
-        request.setDestinationUri(Uri.fromFile(folder1));
-        // request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "istridesappstore/"+strappname+".apk");
-        final DownloadManager manager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
-        manager.enqueue(request);
+          }
 
-        registerReceiver(onComplete,
+
+
+        lastDownload=
+                mgr.enqueue(new DownloadManager.Request(link)
+                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                                DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedOverRoaming(false)
+                        .setTitle(strappname).setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setDescription("Please wait...")
+                        .setDestinationUri(Uri.fromFile(folder1)));
+
+
+
+
+
+
+
+       registerReceiver(onComplete,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
@@ -386,21 +533,51 @@ public class AppDetails extends AppCompatActivity implements SwipeRefreshLayout.
     BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
 
+            progressDialog.cancel();
+            File folder1 = new File(Environment.getExternalStorageDirectory()
+                    + "/Download/" + strappname + ".apk");
 
-            Log.i("petta","komali");
+            Uri apkURI = null;
+            if(Build.VERSION.SDK_INT <= 24){
 
-            File file = new File(Environment.getExternalStorageDirectory()
-                    + "/Download/" + "istridesappstore/" + strappname + ".apk");//name here is the name of any string you want to pass to the method
+                apkURI = Uri.fromFile(folder1);
+
+
+            }else{
+
+                 apkURI = FileProvider.getUriForFile(
+                        ctxt,
+                        ctxt.getApplicationContext()
+                                .getPackageName() + ".provider", folder1);
+
+            }
 
             Intent d = new Intent(Intent.ACTION_VIEW);
-            d.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            d.setDataAndType(apkURI, "application/vnd.android.package-archive");
             d.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(d);
-            unregisterReceiver(this);
+            d.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            ctxt.startActivity(d);
+
             Toast.makeText(AppDetails.this, "Download complete", Toast.LENGTH_SHORT).show();
+
+            unregisterReceiver(this);
+
+
+
+
+
+
 
         }
     };
+
+
+
+
+
+
+
+
 
 
     @Override

@@ -53,12 +53,12 @@ public class ObjectBody {
     public static  class  changename {
 
 
-            @SerializedName("client_name")
-            @Expose
-            public String clientName;
-            @SerializedName("email_id")
-            @Expose
-            public String emailId;
+        @SerializedName("client_name")
+        @Expose
+        public String clientName;
+        @SerializedName("email_id")
+        @Expose
+        public String emailId;
 
         public changename(String clientName, String emailId) {
             this.clientName = clientName;

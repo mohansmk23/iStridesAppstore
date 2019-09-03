@@ -10,7 +10,8 @@
     <RelativeLayout
         android:id="@+id/nodatalay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:layout_below="@id/app_bar"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -27,8 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/nodataimg"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
-            android:text="No apps available !"
+            android:layout_marginTop="32dp"
+            android:text="No more versions!"
             android:textSize="20sp" />
 
     </RelativeLayout>
@@ -42,7 +43,7 @@
         android:background="@color/colorAccent"
         android:gravity="center_horizontal"
         android:paddingVertical="4dp"
-        android:text="More versions"
+        android:text="Older Versions"
         android:textColor="#ffffff"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -99,6 +100,20 @@
                 android:clipToPadding="false"
                 app:cardUseCompatPadding="true"
                 >
+                <com.lid.lib.LabelTextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="right"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:textColor="#ffffff"
+                    app:label_backgroundColor="#03A9F4"
+                    app:label_distance="15dp"
+                    app:label_orientation="RIGHT_TOP"
+                    app:label_text="New"
+                    app:label_textSize="10sp" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -128,34 +143,54 @@
                             android:gravity="center_vertical"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/appname"
-                                android:layout_width="wrap_content"
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="16dp"
                                 android:layout_marginTop="16dp"
-                                android:textSize="16sp"
-                                android:textColor="#000"
-                                android:textStyle="bold" />
+                                android:layout_weight="10"
+                                android:layout_marginRight="16dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/appname"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="7"
+                                    android:textSize="16sp"
+                                    android:textColor="#000"
+                                    android:textStyle="bold" />
+
+
+                            </LinearLayout>
+
+
 
                             <LinearLayout
 
-                                android:layout_marginLeft="16dp"
+
                                 android:layout_marginTop="8dp"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:weightSum="2"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
                                     android:orientation="vertical">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:textSize="12sp"
-                                        android:text="Date"/>
+                                        android:textSize="10sp"
+                                        android:textColor="@color/dark_grey"
+                                        android:text="Release Date"/>
 
                                     <TextView
                                         android:id="@+id/datetxt"
@@ -168,15 +203,18 @@
 
 
                                 <LinearLayout
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="right"
                                     android:layout_marginLeft="16dp"
                                     android:orientation="vertical">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:textSize="12sp"
+                                        android:textSize="10sp"
+                                        android:textColor="@color/dark_grey"
                                         android:text="Version"/>
 
 
@@ -193,64 +231,84 @@
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="0.5dp"
-                                android:layout_marginVertical="8dp"
+                                android:layout_marginVertical="4dp"
                                 android:background="@color/dark_grey" />
 
-                            <LinearLayout
+
+                            <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="16dp"
-                                android:layout_marginTop="8dp"
-                                android:orientation="horizontal">
+                                android:textSize="10sp"
+                                android:textColor="@color/dark_grey"
+                                android:text="Description" />
 
-                                <TextView
-                                    android:id="@+id/downloadtxt"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:drawableStart="@mipmap/downloadicon"
-                                    android:gravity="bottom"
-                                    android:text="@string/download"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:id="@+id/sharetxt"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="16dp"
-                                    android:drawableStart="@mipmap/shareicon"
-                                    android:drawablePadding="4dp"
-                                    android:gravity="bottom"
-                                    android:text="@string/share"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-
-                            </LinearLayout>
-
-                            <View
+                            <TextView
+                                android:id="@+id/destxt"
                                 android:layout_width="match_parent"
-                                android:layout_height="0.5dp"
-                                android:layout_marginTop="8dp"
-                                android:background="@color/dark_grey"></View>
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="4dp"
+                                android:text="N/A"
+                                android:textColor="#000"
+                                android:textSize="14sp" />
+
+
+
+
                         </LinearLayout>
+
+
+
 
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Description" />
 
-                    <TextView
-                        android:id="@+id/destxt"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:weightSum="2"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:textColor="#000"
-                        android:textSize="16sp" />
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/downloadtxt"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_gravity="right"
+                            android:text="Install"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:background="@drawable/layout_corner"
+                            android:backgroundTint="#388e3c"
+                            android:clickable="true"
+                            android:textColor="#FFFFFF"
+                            android:layout_marginRight="2dp"
+                            android:textSize="12sp" />
+
+
+                        <Button
+                            android:id="@+id/sharebtn"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:layout_marginLeft="4dp"
+                            android:layout_gravity="right"
+                            android:text="Share"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:background="@drawable/layout_corner"
+                            android:backgroundTint="#1976d2"
+                            android:clickable="true"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+
 
                     <View
                         android:layout_width="match_parent"
@@ -269,6 +327,69 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2"
+        android:background="#78909c"
+        android:paddingVertical="4dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom">
+
+        <TextView
+            android:id="@+id/appdatetxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:layout_marginLeft="16dp"
+            android:text="11-22-2019"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/companytxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:layout_marginLeft="16dp"
+                android:text="Tansi"/>
+
+
+            <ImageView
+                android:id="@+id/companylogo"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"/>
+
+
+
+
+
+
+
+
+
+        </LinearLayout>
+
+
+
+
+
+
+
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

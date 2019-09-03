@@ -1,15 +1,24 @@
 package com.istrides.appstore;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,16 +32,24 @@ import com.istrides.appstore.Model.LoginModel;
 import com.istrides.appstore.Model.ProfileModel;
 import com.istrides.appstore.Model.SuccessModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    EditText usertxt, emailtxt, passtxt, newpasstxt, confirmpasstxt;
-    TextView edtname, edtpass;
+    EditText  passtxt, newpasstxt, confirmpasstxt;
+    TextView edtname, emailtxt,usertxt,savetxt,canceltxt;
     TextInputLayout old, newp, confirm;
-    int n=0, p=0;
+    LinearLayout cslay,cplay,passlay;
+    Button edtpass;
+    TextView heading,appdate,companyname, bottomcompanyname;
+    ImageView companylogo;
+
     ProgressDialog pDialog;
     Call<ProfileModel> list;
     Call<SuccessModel> res;
@@ -42,18 +59,35 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.parseColor("#000000"));
+        }
+
 
         getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        usertxt = findViewById(R.id.usertxt);
-        emailtxt = findViewById(R.id.emailtxt);
+        usertxt = findViewById(R.id.nametxt);
+        emailtxt = findViewById(R.id.mailtxt);
         passtxt = findViewById(R.id.passtxt);
-        edtname = findViewById(R.id.edtname);
+        savetxt = findViewById(R.id.savetxt);
+        passlay = findViewById(R.id.passlay);
+        canceltxt = findViewById(R.id.canceltxt);
+        cslay = findViewById(R.id.cslay);
+        cplay = findViewById(R.id.cplay);
         newpasstxt = findViewById(R.id.newpasstxt);
         confirmpasstxt = findViewById(R.id.confirmpasstxt);
         edtpass = findViewById(R.id.edtpass);
+
+        appdate = findViewById(R.id.appdatetxt);
+        companyname = findViewById(R.id.companytxt);
+        companylogo = findViewById(R.id.companylogo);
+        bottomcompanyname = findViewById(R.id.bottomcompanytxt);
+
 
         old = findViewById(R.id.oldpasscontainer);
         newp = findViewById(R.id.newpasscontainer);
@@ -62,97 +96,138 @@ public class ProfileActivity extends AppCompatActivity {
         usertxt.setEnabled(false);
         emailtxt.setEnabled(false);
 
-        passtxt.setVisibility(View.GONE);
-        confirmpasstxt.setVisibility(View.GONE);
-        newpasstxt.setVisibility(View.GONE);
-        newpasstxt.setVisibility(View.GONE);
-        passtxt.setVisibility(View.GONE);
-        confirmpasstxt.setVisibility(View.GONE);
+        passlay.setVisibility(View.GONE);
+        cslay.setVisibility(View.GONE);
 
+        String dateStr = "04/05/2010";
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c);
+        appdate.setText(formattedDate);
+        SharedPreferences prefs = getSharedPreferences("COMPANY", MODE_PRIVATE);
+        companyname.setText(prefs.getString("name", " "));
+        bottomcompanyname.setText(prefs.getString("name", " "));
+        Glide.with(ProfileActivity.this).load(prefs.getString("logo", " ")).into(new GlideDrawableImageViewTarget(companylogo));
 
-        edtname.setPaintFlags(edtname.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        edtpass.setPaintFlags(edtname.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         loadprofile();
 
-        edtname.setOnClickListener(new View.OnClickListener() {
+//        edtname.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (n == 0) {
+//
+//                    n = 1;
+//                    usertxt.setEnabled(true);
+//                    emailtxt.setEnabled(true);
+//                    edtname.setText("Save");
+//                    edtpass.setVisibility(View.GONE);
+//                    usertxt.requestFocus();
+//                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.showSoftInput(usertxt, InputMethodManager.SHOW_IMPLICIT);
+//
+//                } else {
+//
+//
+//                    if(usertxt.getText().length()==0){
+//
+//                        Toast.makeText(ProfileActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
+//                    }else if(emailtxt.getText().length()==0){
+//
+//                        Toast.makeText(ProfileActivity.this, "Please enter valid email", Toast.LENGTH_SHORT).show();
+//                    }else {
+//
+//
+//                        changeemailandpass(usertxt.getText().toString(),emailtxt.getText().toString());
+//
+//
+//
+//                    }
+//
+//                }
+//
+//
+//            }
+//        });
+
+
+
+        savetxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (n == 0) {
 
-                    n = 1;
-                    usertxt.setEnabled(true);
-                    emailtxt.setEnabled(true);
-                    edtname.setText("Save");
+                if (passtxt.getText().toString().length()==0){
 
-                } else {
+                    Toast.makeText(ProfileActivity.this, "Please enter old password", Toast.LENGTH_SHORT).show();
+                }else if(newpasstxt.getText().toString().length()==0){
+                    Toast.makeText(ProfileActivity.this, "Please enter new password", Toast.LENGTH_SHORT).show();
 
+                }else if(confirmpasstxt.getText().toString().length()==0){
+                    Toast.makeText(ProfileActivity.this, "Please enter confirm password", Toast.LENGTH_SHORT).show();
+                }else if(!newpasstxt.getText().toString().equals(confirmpasstxt.getText().toString())){
 
-                    if(usertxt.getText().length()==0){
+                    Toast.makeText(ProfileActivity.this, "New password and confirm password not matching", Toast.LENGTH_SHORT).show();
+                }else{
 
-                        Toast.makeText(ProfileActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
-                    }else if(emailtxt.getText().length()==0){
+                    changepass(passtxt.getText().toString(),confirmpasstxt.getText().toString());
 
-                        Toast.makeText(ProfileActivity.this, "Please enter valid email", Toast.LENGTH_SHORT).show();
-                    }else {
-
-
-                        changeemailandpass(usertxt.getText().toString(),emailtxt.getText().toString());
-
-
-
-                    }
 
                 }
+
+            }
+        });
+
+
+        canceltxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+               passlay.setVisibility(View.GONE);
+                cslay.setVisibility(View.GONE);
+                cplay.setVisibility(View.VISIBLE);
+
+
+
 
 
             }
         });
+
+
+
+
+
+
+
+
+
+
+
 
         edtpass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                if (p == 0) {
-
-                    p = 1;
-                    passtxt.setVisibility(View.VISIBLE);
-                    confirmpasstxt.setVisibility(View.VISIBLE);
-                    newpasstxt.setVisibility(View.VISIBLE);
-                    passtxt.setVisibility(View.VISIBLE);
-                    confirmpasstxt.setVisibility(View.VISIBLE);
-                    newpasstxt.setVisibility(View.VISIBLE);
-                    edtpass.setText("Save new pass");
-                } else {
+                    passlay.setVisibility(View.VISIBLE);
+                    cplay.setVisibility(View.GONE);
+                     cslay.setVisibility(View.VISIBLE);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(passtxt, InputMethodManager.SHOW_IMPLICIT);
 
 
 
-                    if (passtxt.getText().toString().length()==0){
-
-                        Toast.makeText(ProfileActivity.this, "Please enter old password", Toast.LENGTH_SHORT).show();
-                    }else if(newpasstxt.getText().toString().length()==0){
-                        Toast.makeText(ProfileActivity.this, "Please enter new password", Toast.LENGTH_SHORT).show();
-
-                    }else if(confirmpasstxt.getText().toString().length()==0){
-                        Toast.makeText(ProfileActivity.this, "Please enter confirm password", Toast.LENGTH_SHORT).show();
-                    }else if(!newpasstxt.getText().toString().equals(confirmpasstxt.getText().toString())){
-
-                        Toast.makeText(ProfileActivity.this, "New password and confirm password not matching", Toast.LENGTH_SHORT).show();
-                    }else{
-
-                        changepass(passtxt.getText().toString(),confirmpasstxt.getText().toString());
-
-
-                    }
 
 
 
 
                 }
 
-            }
+
         });
 
 
@@ -260,10 +335,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                        usertxt.setText(name);
                        emailtxt.setText(email);
-                       n = 0;
                        usertxt.setEnabled(false);
                        emailtxt.setEnabled(false);
                        edtname.setText("Edit profile details");
+                       edtpass.setVisibility(View.VISIBLE);
 
 
 

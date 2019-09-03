@@ -18,8 +18,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ApiConstant {
 
-    public static final String Api_MainLogin_Url =  "http://192.168.1.52/2018/istridesapk/index.php/";
-   // public static final String Api_MainLogin_Url  =  "http://appstore.istrides.in/index.php/";
+  //  public static final String Api_MainLogin_Url =  "http://192.168.1.52/2018/istridesapk/index.php/";
+    public static final String Api_MainLogin_Url  =  "http://appstore.istrides.in/index.php/";
 
 
     public static String getApi_MainLogin_Url() {

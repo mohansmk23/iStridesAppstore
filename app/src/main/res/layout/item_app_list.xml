@@ -24,8 +24,15 @@
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:scaleType="fitXY"
+                android:layout_marginRight="4dp"
                 android:adjustViewBounds="true"
                 android:layout_height="80dp" />
+
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/dark_grey"/>
 
             <LinearLayout
                 android:layout_weight="7"
@@ -40,7 +47,6 @@
                 android:id="@+id/appname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Facebook"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginLeft="16dp"
@@ -49,41 +55,45 @@
                 <LinearLayout
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="8dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="left"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:text="Date"/>
+                            android:textSize="10sp"
+                            android:text="Release Date"/>
 
                         <TextView
                             android:id="@+id/datetxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="03 Apr 2019"
                             android:textColor="#000" />
 
                     </LinearLayout>
 
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:gravity="right"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
+                            android:textSize="10sp"
                             android:text="Version"/>
 
 

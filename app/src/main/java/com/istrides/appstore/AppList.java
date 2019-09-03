@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,10 +18,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -37,6 +45,9 @@ import com.istrides.appstore.Connection.ApiGetPost;
 import com.istrides.appstore.Connection.ObjectBody;
 import com.istrides.appstore.Model.AppListModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,12 +60,13 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
     DrawerLayout dLayout;
     ActionBarDrawerToggle mytoggle;
     NavigationView navView;
-    TextView heading;
+    TextView heading,appdate,companyname;
     RecyclerView recyclerView;
     ProgressDialog pDialog;
     Call<AppListModel> list;
     Applistadapter adapter;
     RelativeLayout nodata;
+    ImageView companylogo;
     SwipeRefreshLayout mSwipeRefreshLayout;
     Boolean doubleBackToExitPressedOnce = false;
 
@@ -62,7 +74,19 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.parseColor("#000000"));
+        }
+
+
         dLayout   = (DrawerLayout) findViewById(R.id.drawer);
+        appdate = findViewById(R.id.appdatetxt);
+        companyname = findViewById(R.id.companytxt);
+        companylogo = findViewById(R.id.companylogo);
         heading = findViewById(R.id.heading);
         heading.setVisibility(View.GONE);
         recyclerView = findViewById(R.id.recyclerview);
@@ -89,6 +113,16 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
                 android.R.color.holo_blue_dark);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        String dateStr = "04/05/2010";
+
+        Date c = Calendar.getInstance().getTime();
+        System.out.println("Current time => " + c);
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        String formattedDate = df.format(c);
+
+        appdate.setText(formattedDate);
 
         loadapplist();
     }
@@ -126,6 +160,15 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
 
                         }else{
                             nodata.setVisibility(View.GONE);
+
+                            SharedPreferences.Editor editor = getSharedPreferences("COMPANY", MODE_PRIVATE).edit();
+                            editor.putString("name", userResponse.getOutput().get(0).getAppsList().get(0).getCompany_name());
+                            editor.putString("logo", userResponse.getOutput().get(0).getAppsList().get(0).getCompany_logo());
+                            editor.apply();
+
+                            Glide.with(AppList.this).load(userResponse.getOutput().get(0).getAppsList().get(0).getCompany_logo()).into(new GlideDrawableImageViewTarget(companylogo));
+
+                            companyname.setText(userResponse.getOutput().get(0).getAppsList().get(0).getCompany_name());
 
                             setuprecyclerview(userResponse.getOutput().get(0).getAppsList());
                         }
@@ -233,6 +276,7 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
               public void onClick(View v) {
                   Intent i = new Intent(getApplicationContext(),AppDetails.class);
                   i.putExtra("APPID",list.getAppId());
+                  i.putExtra("APPNAME",list.getAppsName());
                   startActivity(i);
                   finish();
               }
@@ -253,6 +297,13 @@ public class AppList extends AppCompatActivity implements SwipeRefreshLayout.OnR
         dLayout         = (DrawerLayout) findViewById(R.id.drawer);
         navView         = (NavigationView) findViewById(R.id.navigation);
         View header     = navView.getHeaderView(0);
+
+        Menu menu = navView.getMenu();
+
+        MenuItem menuitem = menu.getItem(0);
+
+        menuitem.setChecked(true);
+
 
 
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

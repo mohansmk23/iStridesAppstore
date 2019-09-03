@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".LoginActivity">
 
     <LinearLayout
@@ -23,11 +24,115 @@
             android:weightSum="0.2">
 
             <ImageView
+                android:id="@+id/userimg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:src="@mipmap/profile" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/userimg"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_toRightOf="@id/userimg"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textColor="#eeeeee"
+                        android:textSize="10sp" />
+
+
+                    <TextView
+                        android:id="@+id/nametxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginVertical="1dp"
+                    android:background="@color/cardview_light_background" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mail"
+                        android:textColor="#eeeeee"
+                        android:textSize="10sp" />
+
+
+                    <TextView
+                        android:id="@+id/mailtxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginVertical="1dp"
+                    android:background="@color/cardview_light_background" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Company"
+                        android:textColor="#eeeeee"
+                        android:textSize="10sp" />
+
+
+                    <TextView
+                        android:id="@+id/companytxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginVertical="1dp"
+                    android:background="@color/cardview_light_background" />
+
+
+
+            </LinearLayout>
 
 
         </RelativeLayout>
@@ -39,131 +144,223 @@
         android:id="@+id/relative_middle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="160dp"
         android:background="@drawable/layout_corner"
         android:elevation="15dp">
 
 
-       <TextView
-           android:id="@+id/edtname"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Edit profile details"
-           android:layout_alignParentRight="true"
-           android:layout_marginRight="18dp"
-           android:textSize="16sp"
-           android:textColor="@color/colorPrimaryDark"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/textContainer"
+        <LinearLayout
+            android:id="@+id/cplay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rlsubject"
-            android:layout_marginTop="16dp">
+            android:paddingVertical="8dp"
 
-            <EditText
-                android:id="@+id/usertxt"
-                android:layout_width="match_parent"
+            android:gravity="right"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/usericon"
-                android:drawablePadding="4dp"
-                android:hint="  Name"
-                android:inputType="text"
-                android:textColor="@drawable/edittextcolor" />
+                android:layout_below="@+id/emailcontainer"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="18dp"
+                android:text="Do you want to "
+                android:textColor="#1e88e5"
+                android:textSize="16sp" />
 
-        </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/edtpass"
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:background="@drawable/loginbuttonshape"
+                android:text="Change password"
+                android:textColor="#ffffff" />
 
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/emailcontainer"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/passlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textContainer"
-            android:layout_marginTop="16dp">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/emailtxt"
+
+            <android.support.design.widget.TextInputLayout
+
+                android:id="@+id/oldpasscontainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/emailicon"
-                android:drawablePadding="4dp"
-                android:drawableTint="@color/colorPrimary"
-                android:hint="  E-mail"
-                android:textColor="@drawable/edittextcolor" />
+                android:paddingTop="16dp">
 
-        </android.support.design.widget.TextInputLayout>
+                <EditText
+                    android:id="@+id/passtxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/passicon"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:hint="  Old Password"
+                    android:inputType="textPassword"
+                    android:textColor="@drawable/edittextcolor" />
+
+            </android.support.design.widget.TextInputLayout>
 
 
-        <android.support.design.widget.TextInputLayout
-
-            android:id="@+id/oldpasscontainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/emailcontainer"
-            android:layout_marginTop="16dp">
-
-            <EditText
-                android:id="@+id/passtxt"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/newpasscontainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/passicon"
-                android:drawablePadding="4dp"
-                android:hint="  Old Password"
-                android:inputType="textPassword"
-                android:textColor="@drawable/edittextcolor" />
+                android:paddingTop="16dp">
 
-        </android.support.design.widget.TextInputLayout>
+                <EditText
+                    android:id="@+id/newpasstxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/passicon"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:hint="  New Password"
+                    android:inputType="textPassword"
+                    android:textColor="@drawable/edittextcolor" />
 
+            </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:id="@+id/edtpass"
-            android:layout_width="wrap_content"
-            android:layout_below="@+id/emailcontainer"
-            android:layout_height="wrap_content"
-            android:text="Edit password"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="18dp"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimaryDark"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/newpasscontainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/oldpasscontainer"
-            android:layout_marginTop="16dp">
-
-            <EditText
-                android:id="@+id/newpasstxt"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/confirmcontainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/passicon"
-                android:drawablePadding="4dp"
-                android:hint="  New Password"
-                android:inputType="textPassword"
-                android:textColor="@drawable/edittextcolor" />
+                android:paddingTop="16dp">
 
-        </android.support.design.widget.TextInputLayout>
+                <EditText
+                    android:id="@+id/confirmpasstxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/passicon"
+                    android:drawablePadding="4dp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:hint="  Confirm Password"
+                    android:inputType="textPassword"
+                    android:textColor="@drawable/edittextcolor" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/confirmcontainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/newpasscontainer"
-            android:layout_marginTop="16dp">
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/confirmpasstxt"
+
+
+            <LinearLayout
+                android:id="@+id/cslay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/passicon"
-                android:drawablePadding="4dp"
-                android:hint="  Confirm Password"
-                android:inputType="textPassword"
-                android:textColor="@drawable/edittextcolor" />
+                android:gravity="right"
+                android:layout_marginRight="24dp"
+                android:layout_below="@id/confirmcontainer"
+                android:paddingTop="24dp"
+                android:orientation="horizontal">
 
-        </android.support.design.widget.TextInputLayout>
+
+
+                <TextView
+                    android:id="@+id/canceltxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CANCEL"
+                    android:textColor="#b71c1c"
+                    android:textSize="16sp"
+                    android:paddingBottom="16dp"
+                    android:layout_marginRight="24dp"
+                    android:textStyle="bold" />
+
+
+
+                <TextView
+                    android:id="@+id/savetxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SAVE"
+                    android:textColor="#388e3c"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+
+
+
+
+            </LinearLayout>
+
+
+
+
+
+        </LinearLayout>
+
+
+
 
     </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2"
+        android:background="#78909c"
+        android:paddingVertical="4dp"
+        android:gravity="bottom">
+
+        <TextView
+            android:id="@+id/appdatetxt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:layout_marginLeft="16dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/bottomcompanytxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:layout_marginLeft="16dp" />
+
+
+            <ImageView
+                android:id="@+id/companylogo"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"/>
+
+
+
+
+
+
+
+
+
+        </LinearLayout>
+
+
+
+
+
+
+
+    </LinearLayout>
 </RelativeLayout>
